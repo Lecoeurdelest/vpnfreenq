@@ -1,3 +1,15 @@
 #env
 ./backend/conda
 ./backend/env
+
+#python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg
+*.egg-info/
+*.manifest
+*.spec
+*.log
