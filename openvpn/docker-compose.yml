@@ -2,12 +2,17 @@ version: "3.8"
 
 services:
   openvpn:
-    image: vpnfreenq/openvpn:latest
+    build: .
     container_name: openvpn
-    cap_add:
-      - NET_ADMIN
     ports:
       - "1194:1194/udp"
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
     volumes:
-      - ./openvpn-data:/etc/openvpn
-    restart: unless-stopped
+      - ./scripts:/usr/local/bin/scripts
+      - openvpn-data:/etc/openvpn
+
+volumes:
+  openvpn-data:
