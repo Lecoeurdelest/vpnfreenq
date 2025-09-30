@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: vpn-db
+    environment:
+      POSTGRES_USER: vpnadmin
+      POSTGRES_PASSWORD: vpnpass
+      POSTGRES_DB: vpn
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  openvpn:
+    image: openvpn/openvpn
+    container_name: vpn-server
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./openvpn:/etc/openvpn
+    ports:
+      - "1194:1194/udp"
+    restart: unless-stopped
+    command: ["ovpn_run"]
+
+  backend:
+    build: ./backend
+    container_name: vpn-backend
+    depends_on:
+      - db
+      - openvpn
+    environment:
+      DATABASE_URL: postgres://vpnadmin:vpnpass@db:5432/vpn
+      OPENVPN_DATA: /etc/openvpn
+    volumes:
+      - ./openvpn:/etc/openvpn
+    ports:
+      - "9000:9000"
