@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  openvpn:
+    image: vpnfreenq/openvpn:latest
+    container_name: openvpn
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "1194:1194/udp"
+    volumes:
+      - ./openvpn-data:/etc/openvpn
+    restart: unless-stopped
